@@ -13,7 +13,7 @@ const Home = () => {
   
   const { data, loading, error } = useSelector((state) => state.weather);
 
- console.log(data);
+//  console.log(data);
   
 if (loading) {
   return <Text>Loading...</Text>;

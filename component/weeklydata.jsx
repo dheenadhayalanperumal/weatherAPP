@@ -1,35 +1,37 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
+import { useSelector } from "react-redux";
 
-const sun = require("../Image/cloud.png");
+const sun = require("../Image/icon/cloudy.png");
+
+
 
 const WeeklyData = () => {
+
+    const { data, loading, error } = useSelector((state) => state.weather);
+    console.log(data.days[0].temp);
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Weekly Forecast</Text>
             <View>
-                {days.map((day, index) => (
-                    <View key={index} style={styles.smallbox}>
-                        <Text style={styles.subtitle}>{day.name}</Text>
-                        <Image source={sun} style={styles.image} />
-                        <Text style={styles.subtitle}>Mostly Clear</Text>
-                        <Text style={styles.subtitle}>27/20°C</Text>
-                    </View>
-                ))}
+            {data.days.map((day, index) => {
+    const date = new Date(day.datetime);
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return (
+        <View key={index} style={styles.smallbox}>
+            <Text style={styles.subtitle}>{formattedDate}</Text>
+            <Image source={sun} style={styles.image} />
+            <Text style={styles.subtitle}>{day.conditions}</Text>
+            <Text style={styles.subtitle}>{day.tempmin}/{day.tempmax}°C</Text>
+        </View>
+    );
+})}
             </View>
         </View>
     );
 };
 
-const days = [
-    { name: "MON" },
-    { name: "TUE" },
-    { name: "WED" },
-    { name: "THU" },
-    { name: "FRI" },
-    { name: "SAT" },
-    { name: "SUN" },
-];
+
 
 export default WeeklyData;
 
@@ -61,7 +63,7 @@ const styles = {
     title: {
         color: "#3FA2F6",
         fontSize: 18,
-        marginTop: 10,
+        marginBottom: 10,
         fontWeight: "medium",
         textAlign: "left",
     },

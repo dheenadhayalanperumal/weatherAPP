@@ -72,6 +72,14 @@ const styles = {
        
        paddingLeft: "15%",
          paddingRight: "15%",
+         shadowColor: "#000",
+         shadowOffset: {
+             width: 0,
+             height: 3,
+         },
+         shadowOpacity: 0.36,
+         shadowRadius: 3,
+         elevation: 3,
          
     },
     subtitle: {

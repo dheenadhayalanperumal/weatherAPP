@@ -6,10 +6,38 @@ import { Text, View, Dimensions, Image } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
-const image = require("../Image/cloud.png");
+
+
+const imageSources = {
+  'clear-day': require('../Image/icon/clear-day.gif'),
+  'clear-night': require('../Image/icon/clear-night.gif'),
+  'cloudy': require('../Image/icon/cloudy.png'),
+  'fog': require('../Image/icon/fog.gif'),
+  'hail': require('../Image/icon/hail.png'),
+  'partly-cloudy-day': require('../Image/icon/partly-cloudy-day.gif'),
+  'partly-cloudy-night': require('../Image/icon/partly-cloudy-night.gif'),
+  'rain-snow-showers-day': require('../Image/icon/rain-snow-showers-day.png'),
+  'rain-snow-showers-night': require('../Image/icon/rain-snow-showers-night.png'),
+  'rain-snow': require('../Image/icon/rain-snow.png'),
+  'rain': require('../Image/icon/rain.gif'),
+  'showers-day': require('../Image/icon/showers-day.gif'),
+  'showers-night': require('../Image/icon/showers-night.gif'),
+  'sleet': require('../Image/icon/sleet.png'),
+  'snow-showers-day': require('../Image/icon/snow-showers-day.gif'),
+  'snow-showers-night': require('../Image/icon/snow-showers-night.gif'),
+  'snow': require('../Image/icon/snow.gif'),
+  'thunder-rain': require('../Image/icon/thunder-rain.gif'),
+  'thunder-showers-day': require('../Image/icon/thunder-showers-day.gif'),
+  'thunder-showers-night': require('../Image/icon/thunder-showers-night.png'),
+  'thunder': require('../Image/icon/thunder.png'),
+  'wind': require('../Image/icon/wind.png'),
+  // 'default': require('../Image/icon/default.png'), // Default image
+};
 
 const CurrentWeather = () => {
   const { data, loading, error } = useSelector((state) => state.weather);
+
+  // console.log(data.currentConditions.icon);
 
   if (!data) {
     return <Text>No weather data available</Text>;
@@ -21,15 +49,15 @@ const CurrentWeather = () => {
       <View style={styles.weatherContainer}>
         <View style={styles.inner}>
           <View style={styles.weatherBox}>
-            <Image source={image} style={styles.image} />
+            <Image source={imageSources[data.currentConditions.icon]} style={styles.image} />
           </View>
 
           <View style={styles.weatherBox}>
-            <Text style={styles.temp}>{data.days[0].temp}°C</Text>
+            <Text style={styles.temp}>{data.currentConditions.temp}°C</Text>
 
             <Text style={styles.title}>FEEL LIKE</Text>
 
-            <Text style={styles.subtitle}>{data.days[0].feelslike}°C</Text>
+            <Text style={styles.subtitle}>{data.currentConditions.feelslike}°C</Text>
           </View>
         </View>
         <View style={styles.weatherBox1}>
@@ -126,5 +154,6 @@ paddingRight: 15,
     image: {
         width: 150,
         height: 150,
+        
     },
 };

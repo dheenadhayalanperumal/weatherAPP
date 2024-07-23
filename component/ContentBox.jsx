@@ -3,10 +3,10 @@ import { Platform } from 'react-native';
 import { useSelector } from "react-redux";
 import { Text, View , Image} from "react-native";
 
-const pressure = require("../Image/pressure.png");
-const wind = require("../Image/wind.png");
-const humidity = require("../Image/humidity.png");
-const uv = require("../Image/uv-index.png");
+const pressure = require("../Image/pressure.gif");
+const wind = require("../Image/wind.gif");
+const humidity = require("../Image/humidity.gif");
+const uv = require("../Image/uv-index.gif");
 
 const ContentBox = () => {
 
@@ -89,6 +89,7 @@ const styles = {
     image: {
         width: 30,
         height: 30,
+        resizeMode: "contain",
         
     },
     subtitle: {

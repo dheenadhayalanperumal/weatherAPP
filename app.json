@@ -3,10 +3,19 @@
     "name": "weatherapp",
     "slug": "weatherapp",
     "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "scheme": "yourapp",
     "extra": {
       "eas": {
         "projectId": "1017dcd6-4092-404e-8229-98390b0ecbfa"
       }
+    },
+    "android": {
+      "package": "com.dheena007.weatherapp"
     }
   }
 }

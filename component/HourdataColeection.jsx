@@ -14,16 +14,22 @@ const formatTime = (timeString) => {
 const HourDataCollection = () => {
     const { data, loading, error } = useSelector((state) => state.weather);
 
-      // Corrected from data.length
+    // Handle loading state
+    if (loading) {
+        return <Text>Loading...</Text>;
+    }
+
+    // Handle error state
+    if (error) {
+        return <Text>Error: {error}</Text>;
+    }
 
     // Handle cases where data or days may be undefined
-   
-    if (!data || !data.days || !data.days[0]|| !data.days[0].hours)  
-        {
-        return <Text>No data available</Text>;  
-        }
+    if (!data || !data.days || !data.days[0] || !data.days[0].hours) {
+        return <Text>No data available</Text>;
+    }
 
-    
+    const hours = data.days[0].hours;
 
     return (
         <View style={styles.container}>
@@ -32,12 +38,12 @@ const HourDataCollection = () => {
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-                {data.days[0].hours.map((item, index) => (
+                {hours.map((item, index) => (
                     <HourData
                         key={index}
                         time={formatTime(item.datetime)}  // Format the time here
                         temperature={item.temp}
-                        image={item.icon}
+                        image={item.icon}  // Ensure 'icon' is the correct property name
                         isLastItem={index === hours.length - 1}  // Corrected from data.length
                     />
                 ))}
