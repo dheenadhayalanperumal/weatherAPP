@@ -1,73 +1,37 @@
 import React, { useEffect } from "react";
 
-import {  View, ScrollView,Text } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import SearchBar from "./SearchBar";
 import CurrentWeather from "./CurrentWeather";
 import ContentBox from "./ContentBox";
 import HourDataCollection from "./HourdataColeection";
 import WeeklyData from "./weeklydata";
 import Sunset from "./Sunset";
-import { setWeatherData} from "../reducers/weatherReducer"; // Import setWeatherData
-import { useDispatch, useSelector } from 'react-redux'; // Import useSelector
-
-
-
+import { useSelector } from "react-redux"; // Import useSelector
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const weatherData = useSelector(state => state.weatherData); 
-
-  const [load, setLoad] = React.useState(true);
   
+  const { data, loading, error } = useSelector((state) => state.weather);
 
+ console.log(data);
   
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        
-        const response = await fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/13.0843,80.2705?key=YDKLNUJLBQLPSZXWKD3MT5XQS");
-        const data = await response.json();
-        console.log(data.address);
-        dispatch(setWeatherData(data));
-        dispatch({ type: 'SET_MOVIE_ID', payload: id });
-        // console.log(data);
-        setLoad(false);
+if (loading) {
+  return <Text>Loading...</Text>;
+}
 
-      } catch (error) {
-        console.error(error);
-        setLoad(false);
-      }
-    };
-  
-    fetchWeather();
-  }, []);
+if (error) {
+  return <Text>Error: {error}</Text>;
+}
 
-  console.log(weatherData);
-
-  {
-    if (load) {
-      return <Text>Loading...</Text>;
-  }
-  }
-
-  
   return (
     <ScrollView>
       <View style={styles.container}>
         <SearchBar />
         <CurrentWeather />
         <ContentBox />
-
-      
-          {/* <View>
-            <Text>Location: {weatherData}</Text>
-           
-          </View> */}
-     
-
+        <Sunset />
         <HourDataCollection />
         <WeeklyData />
-        <Sunset />
       </View>
     </ScrollView>
   );
@@ -82,13 +46,12 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     color: "white",
-  
+    
   },
   subtitle: {
     color: "#3FA2F6",
     fontSize: 20,
     marginTop: 10,
     fontWeight: "bold",
-    
   },
 };

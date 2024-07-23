@@ -13,7 +13,7 @@ const WeeklyData = () => {
                         <Text style={styles.subtitle}>{day.name}</Text>
                         <Image source={sun} style={styles.image} />
                         <Text style={styles.subtitle}>Mostly Clear</Text>
-                        <Text style={styles.subtitle}>27/20 C</Text>
+                        <Text style={styles.subtitle}>27/20°C</Text>
                     </View>
                 ))}
             </View>
@@ -22,13 +22,13 @@ const WeeklyData = () => {
 };
 
 const days = [
-    { name: "Mon" },
-    { name: "Tue" },
-    { name: "Wed" },
-    { name: "Thu" },
-    { name: "Fri" },
-    { name: "Sat" },
-    { name: "Sun" },
+    { name: "MON" },
+    { name: "TUE" },
+    { name: "WED" },
+    { name: "THU" },
+    { name: "FRI" },
+    { name: "SAT" },
+    { name: "SUN" },
 ];
 
 export default WeeklyData;
@@ -45,8 +45,8 @@ const styles = {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginVertical: 10, // Adds space between each day's forecast
-        padding: 10, // Adds padding inside each box
+        marginVertical: 5, // Adds space between each day's forecast
+        padding: 5, // Adds padding inside each box
         backgroundColor: "#f0f8ff", // Light background color to distinguish each day
         borderRadius: 8, // Rounds the corners of each box
     },
@@ -60,9 +60,9 @@ const styles = {
     },
     title: {
         color: "#3FA2F6",
-        fontSize: 20,
+        fontSize: 18,
         marginTop: 10,
-        fontWeight: "bold",
+        fontWeight: "medium",
         textAlign: "left",
     },
 };

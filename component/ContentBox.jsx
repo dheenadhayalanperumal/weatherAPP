@@ -1,6 +1,6 @@
 import React from "react";
 import { Platform } from 'react-native';
-
+import { useSelector } from "react-redux";
 import { Text, View , Image} from "react-native";
 
 const pressure = require("../Image/pressure.png");
@@ -9,29 +9,37 @@ const humidity = require("../Image/humidity.png");
 const uv = require("../Image/uv-index.png");
 
 const ContentBox = () => {
+
+    const { data, loading, error } = useSelector((state) => state.weather);
+
+    if (!data)  
+        {
+        return <Text>No data available</Text>;  
+        }
+
     return (
         <View style={styles.container}>
         <View style={styles.smallbox}>
             <View style={styles.smallbox1}>
 <Image source={pressure} style={styles.image} />  
 <Text style={styles.subtitle}>Pressure</Text>              
-<Text style={styles.subtitle1}>860mph</Text>   
+<Text style={styles.subtitle1}>{data.days[0].pressure} mph</Text>   
 
             </View>
             <View style={styles.smallbox1}>
             <Image source={wind} style={styles.image} />  
 <Text style={styles.subtitle}>Wind</Text>              
-<Text style={styles.subtitle1}>1.6km/h</Text>  
+<Text style={styles.subtitle1}>{data.days[0].windspeed}km/h</Text>  
             </View>
             <View style={styles.smallbox1}>
             <Image source={humidity} style={styles.image} />  
 <Text style={styles.subtitle}>Humidity</Text>              
-<Text style={styles.subtitle1}>50%</Text>  
+<Text style={styles.subtitle1}>{data.days[0].humidity}%</Text>  
             </View>
             <View style={styles.smallbox1}>
             <Image source={uv} style={styles.image} />  
 <Text style={styles.subtitle}>UV Index</Text>              
-<Text style={styles.subtitle1}>3 of 10</Text>  
+<Text style={styles.subtitle1}>{data.days[0].uvindex} of 10</Text>  
             </View>
         </View>
         </View>
@@ -85,7 +93,7 @@ const styles = {
     },
     subtitle: {
         color: '#FFFFFF', 
-        fontWeight: Platform.OS === 'android' ? 'bold' : '500',
+        fontWeight: Platform.OS === 'android' ? 'medium' : '500',
         fontSize: 14,
        
     },

@@ -4,35 +4,25 @@ const weatherSlice = createSlice({
   name: 'weather',
   initialState: {
     data: null,
+    loading: false,
+    error: null,
   },
   reducers: {
-    setWeatherData(state, action) {
+    fetchWeatherStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchWeatherSuccess(state, action) {
       state.data = action.payload;
+      state.loading = false;
+    },
+    fetchWeatherFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
     },
   },
 });
 
-export const { setWeatherData } = weatherSlice.actions;
+export const { fetchWeatherStart, fetchWeatherSuccess, fetchWeatherFailure } = weatherSlice.actions;
 
 export default weatherSlice.reducer;
-
-
-
-// import { createStore } from 'redux';
-
-// const initialState = {
-//   movieId: 1,
-// };
-
-// function rootReducer(state = initialState, action) {
-//   switch (action.type) {
-//     case 'SET_MOVIE_ID':
-//       return { ...state, movieId: action.payload };
-//     default:
-//       return state;
-//   }
-// }
-
-// const store = createStore(rootReducer);
-
-// export default store;

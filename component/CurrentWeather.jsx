@@ -9,7 +9,12 @@ const { width, height } = Dimensions.get("window");
 const image = require("../Image/cloud.png");
 
 const CurrentWeather = () => {
-  const weather = useSelector((state) => state.weatherReducer);
+  const { data, loading, error } = useSelector((state) => state.weather);
+
+  if (!data) {
+    return <Text>No weather data available</Text>;
+  }
+
   // console.log(weather);
   return (
     <View style={styles.container}>
@@ -20,17 +25,17 @@ const CurrentWeather = () => {
           </View>
 
           <View style={styles.weatherBox}>
-            <Text style={styles.temp}>25°C</Text>
+            <Text style={styles.temp}>{data.days[0].temp}°C</Text>
 
             <Text style={styles.title}>FEEL LIKE</Text>
 
-            <Text style={styles.subtitle}>24°C</Text>
+            <Text style={styles.subtitle}>{data.days[0].feelslike}°C</Text>
           </View>
         </View>
         <View style={styles.weatherBox1}>
-          <Text style={styles.subtitle1}>Min Temp 35 C</Text>
+          <Text style={styles.subtitle1}>Min Temp {data.days[0].tempmin}°C</Text>
 
-          <Text style={styles.subtitle1}>Max Temp 35 C</Text>
+          <Text style={styles.subtitle1}>Max Temp {data.days[0].tempmax}°C</Text>
         </View>
       </View>
     </View>
@@ -96,7 +101,7 @@ paddingRight: 15,
   },
   title: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: "medium",
     color: "white", // Set font color to white
     fontFamily: "Poppins", // Set font to Poppins
   },

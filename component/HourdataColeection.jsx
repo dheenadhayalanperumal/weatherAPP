@@ -1,86 +1,50 @@
 import React from "react";
-import { ScrollView, View,Text, Dimensions } from "react-native";
+import { ScrollView, View, Text, Dimensions } from "react-native";
 import HourData from "./HourData";
+import { useSelector } from "react-redux";
 
 const { width } = Dimensions.get("window");
 
-const data = [
-    {
-        time: "12:00",
-        temperature: "30",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "13:00",
-        temperature: "31",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "14:00",
-        temperature: "32",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "15:00",
-        temperature: "33",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "16:00",
-        temperature: "34",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "17:00",
-        temperature: "35",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "18:00",
-        temperature: "36",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "19:00",
-        temperature: "37",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "20:00",
-        temperature: "38",
-        image: require("../Image/cloud.png")
-    },
-    {
-        time: "21:00",
-        temperature: "39",
-        image: require("../Image/cloud.png")
-    },
-];
+// Function to format time from "HH:MM:SS" to "HH:MM"
+const formatTime = (timeString) => {
+    const [hour, minute] = timeString.split(':');
+    return `${hour}:${minute}`;
+};
 
 const HourDataCollection = () => {
+    const { data, loading, error } = useSelector((state) => state.weather);
+
+      // Corrected from data.length
+
+    // Handle cases where data or days may be undefined
+   
+    if (!data || !data.days || !data.days[0]|| !data.days[0].hours)  
+        {
+        return <Text>No data available</Text>;  
+        }
+
+    
+
     return (
         <View style={styles.container}>
             <View>
-            <Text style={styles.subtitle}>Hourly Forecast</Text>  
+                <Text style={styles.subtitle}>Hourly Forecast</Text>
             </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer} >
-            
-            
-            {data.map((item, index) => (
-                <HourData
-                    key={index}
-                    time={item.time}
-                    temperature={item.temperature}
-                    image={item.image}
-                    isLastItem={index === data.length - 1}
-                />
-            ))}
-        </ScrollView>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+                {data.days[0].hours.map((item, index) => (
+                    <HourData
+                        key={index}
+                        time={formatTime(item.datetime)}  // Format the time here
+                        temperature={item.temp}
+                        image={item.icon}
+                        isLastItem={index === hours.length - 1}  // Corrected from data.length
+                    />
+                ))}
+            </ScrollView>
         </View>
-       
     );
-}
+};
 
 export default HourDataCollection;
 
@@ -95,15 +59,12 @@ const styles = {
         width: "100%",
         display: "flex",
         flexDirection: "column",
-      
     },
     subtitle: {
         color: "#3FA2F6",
-        fontSize: 20,
+        fontSize: 18,
         marginTop: 10,
-        fontWeight: "bold",
+        fontWeight: "medium",
         marginLeft: 15,
-        
-      },
-  
+    },
 };
