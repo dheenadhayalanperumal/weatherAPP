@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Platform } from 'react-native';
-
+import { Platform } from "react-native";
+import { fetchWeatherData } from '../actions/weatherActions';
+import { useDispatch } from "react-redux";
 import {
   Text,
   View,
@@ -11,14 +12,17 @@ import {
 const { width, height } = Dimensions.get("window");
 const Home = () => {
   const [location, setLocation] = useState("");
-
+  const dispatch = useDispatch();
   const handleChange = (text) => {
     setLocation(text);
   };
 
   const handleSearch = () => {
     console.log(location);
-    alert(location);
+    // alert(location);
+
+      dispatch(fetchWeatherData("{location}"));
+    
   };
 
   return (
@@ -26,7 +30,7 @@ const Home = () => {
       <View style={styles.Search}>
         <TextInput
           style={styles.input}
-          placeholder="Search Location"
+          placeholder="Enter City Name..."
           onChangeText={handleChange}
           value={Text}
         />
@@ -55,16 +59,16 @@ const styles = {
 
   input: {
     alignItems: "center",
+    color: "#FFFFFF",
     backgroundColor: "#00C1F6",
     width: width - 120,
     height: height / 20,
     justifyContent: "center",
     paddingLeft: 25,
     borderRadius: 8,
-    color: '#FFFFFF', 
-    fontWeight: Platform.OS === 'android' ? 'bold' : '500',
-  fontSize: 16,
-
+    
+    fontWeight: Platform.OS === "android" ? "medium" : "500",
+    fontSize: 12,
   },
   button: {
     alignItems: "center",
@@ -73,13 +77,10 @@ const styles = {
     height: height / 20,
     justifyContent: "center",
     borderRadius: 8,
-    
-    
   },
   buttonText: {
-    color: '#FFFFFF', 
-    fontWeight: Platform.OS === 'android' ? 'normal' : '500',
-  fontSize: 14,
+    color: "#FFFFFF",
+    fontWeight: Platform.OS === "android" ? "normal" : "500",
+    fontSize: 14,
   },
-
 };

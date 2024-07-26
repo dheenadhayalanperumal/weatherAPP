@@ -10,7 +10,7 @@ export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchWeatherData());
+    dispatch(fetchWeatherData('Chennai'));
   }, [dispatch]);
 
   return (
