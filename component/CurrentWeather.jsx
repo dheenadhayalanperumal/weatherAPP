@@ -134,25 +134,25 @@ paddingRight: 15,
     fontSize: 18,
     fontWeight: "medium",
     color: "white", // Set font color to white
-    fontFamily: "Poppins", // Set font to Poppins
+    // fontFamily: "Poppins", // Set font to Poppins
   },
   subtitle: {
     fontSize: 16,
     fontWeight: Platform.OS === 'android' ? 'normal' : '500',
     color: "white", // Set font color to white
-    fontFamily: "Poppins", // Set font to Poppins
+    // fontFamily: "Poppins", // Set font to Poppins
   },
   temp: {
     fontSize: 36,
     fontWeight: Platform.OS === 'android' ? 'bold' : '700',
     color: "white", // Set font color to white
-    fontFamily: "Poppins", // Set font to Poppins
+    // fontFamily: "Poppins", // Set font to Poppins
   },
   subtitle1: {
     fontSize: 12,
     fontWeight: Platform.OS === 'android' ? 'normal' : '500',
     color: "white", // Set font color to white
-    fontFamily: "Poppins", // Set font to Poppins
+    // fontFamily: "Poppins", // Set font to Poppins
   },
     image: {
         width: 150,

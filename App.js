@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchWeatherData } from './actions/weatherActions';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet,  View, } from 'react-native';
 import Home from './component/home';
 
 export default function App() {

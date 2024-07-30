@@ -1,6 +1,6 @@
 import React from "react";
 
-import {  View, ScrollView ,Text,Image} from "react-native";
+import {  View,Text,Image} from "react-native";
 import { useSelector } from "react-redux";
 
 const sunset = require("../Image/sunset.png");
