@@ -8,15 +8,16 @@ const weatherSlice = createSlice({
     error: null,
   },
   reducers: {
-    fetchWeatherStart(state) {
+    fetchWeatherStart: (state) => {
       state.loading = true;
       state.error = null;
+      state.data = null; // Clear previous data
     },
-    fetchWeatherSuccess(state, action) {
-      state.data = action.payload;
+    fetchWeatherSuccess: (state, action) => {
       state.loading = false;
+      state.data = action.payload;
     },
-    fetchWeatherFailure(state, action) {
+    fetchWeatherFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
@@ -24,5 +25,4 @@ const weatherSlice = createSlice({
 });
 
 export const { fetchWeatherStart, fetchWeatherSuccess, fetchWeatherFailure } = weatherSlice.actions;
-
 export default weatherSlice.reducer;

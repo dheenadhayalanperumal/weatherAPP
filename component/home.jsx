@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView, Text,ActivityIndicator } from "react-native";
 import SearchBar from "./SearchBar";
 import CurrentWeather from "./CurrentWeather";
 import ContentBox from "./ContentBox";
@@ -9,6 +9,8 @@ import WeeklyData from "./weeklydata";
 import Sunset from "./Sunset";
 import { useSelector } from "react-redux"; // Import useSelector
 
+
+
 const Home = () => {
   
   const { data, loading, error } = useSelector((state) => state.weather);
@@ -16,7 +18,7 @@ const Home = () => {
 //  console.log(data);
   
 if (loading) {
-  return <Text>Loading...</Text>;
+  return  <ActivityIndicator size="large" />
 }
 
 if (error) {

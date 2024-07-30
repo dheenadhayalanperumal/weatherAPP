@@ -9,20 +9,20 @@ import {
   Dimensions,
   TextInput,
 } from "react-native";
+
 const { width, height } = Dimensions.get("window");
+
 const Home = () => {
   const [location, setLocation] = useState("");
   const dispatch = useDispatch();
+
   const handleChange = (text) => {
     setLocation(text);
   };
 
   const handleSearch = () => {
     console.log(location);
-    // alert(location);
-
-      dispatch(fetchWeatherData("{location}"));
-    
+    dispatch(fetchWeatherData(location));
   };
 
   return (
@@ -32,9 +32,8 @@ const Home = () => {
           style={styles.input}
           placeholder="Enter City Name..."
           onChangeText={handleChange}
-          value={Text}
+          value={location}
         />
-
         <TouchableOpacity style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>Search</Text>
         </TouchableOpacity>
@@ -50,13 +49,11 @@ const styles = {
     flex: 1,
     // padding: 10,
   },
-
   Search: {
     display: "flex",
     flexDirection: "row",
     gap: 10,
   },
-
   input: {
     alignItems: "center",
     color: "#FFFFFF",
@@ -66,7 +63,6 @@ const styles = {
     justifyContent: "center",
     paddingLeft: 25,
     borderRadius: 8,
-    
     fontWeight: Platform.OS === "android" ? "medium" : "500",
     fontSize: 12,
   },
