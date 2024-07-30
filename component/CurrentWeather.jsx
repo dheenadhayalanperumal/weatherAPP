@@ -47,12 +47,15 @@ const CurrentWeather = () => {
   return (
     <View style={styles.container}>
       <View style={styles.weatherContainer}>
+        
         <View style={styles.inner}>
           <View style={styles.weatherBox}>
+
             <Image source={imageSources[data.currentConditions.icon]} style={styles.image} />
           </View>
 
           <View style={styles.weatherBox}>
+          <Text style={styles.title}>{data.address}</Text>
             <Text style={styles.temp}>{data.currentConditions.temp}°C</Text>
 
             <Text style={styles.title}>FEEL LIKE</Text>
@@ -113,7 +116,7 @@ paddingRight: 15,
   weatherBox: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "left",
+    alignItems: "center",
     justifyContent: "center",
     gap: 5,
   },
