@@ -9,25 +9,25 @@ const { width, height } = Dimensions.get("window");
 
 
 const imageSources = {
-  'clear-day': require('../Image/icon/clear-day.gif'),
-  'clear-night': require('../Image/icon/clear-night.gif'),
+  'clear-day': require('../Image/icon/clear-day.png'),
+  'clear-night': require('../Image/icon/clear-night.png'),
   'cloudy': require('../Image/icon/cloudy.png'),
-  'fog': require('../Image/icon/fog.gif'),
+  'fog': require('../Image/icon/fog.png'),
   'hail': require('../Image/icon/hail.png'),
-  'partly-cloudy-day': require('../Image/icon/partly-cloudy-day.gif'),
-  'partly-cloudy-night': require('../Image/icon/partly-cloudy-night.gif'),
+  'partly-cloudy-day': require('../Image/icon/partly-cloudy-day.png'),
+  'partly-cloudy-night': require('../Image/icon/partly-cloudy-night.png'),
   'rain-snow-showers-day': require('../Image/icon/rain-snow-showers-day.png'),
   'rain-snow-showers-night': require('../Image/icon/rain-snow-showers-night.png'),
   'rain-snow': require('../Image/icon/rain-snow.png'),
-  'rain': require('../Image/icon/rain.gif'),
-  'showers-day': require('../Image/icon/showers-day.gif'),
-  'showers-night': require('../Image/icon/showers-night.gif'),
+  'rain': require('../Image/icon/rain.png'),
+  'showers-day': require('../Image/icon/showers-day.png'),
+  'showers-night': require('../Image/icon/showers-night.png'),
   'sleet': require('../Image/icon/sleet.png'),
-  'snow-showers-day': require('../Image/icon/snow-showers-day.gif'),
-  'snow-showers-night': require('../Image/icon/snow-showers-night.gif'),
-  'snow': require('../Image/icon/snow.gif'),
-  'thunder-rain': require('../Image/icon/thunder-rain.gif'),
-  'thunder-showers-day': require('../Image/icon/thunder-showers-day.gif'),
+  'snow-showers-day': require('../Image/icon/snow-showers-day.png'),
+  'snow-showers-night': require('../Image/icon/snow-showers-night.png'),
+  'snow': require('../Image/icon/snow.png'),
+  'thunder-rain': require('../Image/icon/thunder-rain.png'),
+  'thunder-showers-day': require('../Image/icon/thunder-showers-day.png'),
   'thunder-showers-night': require('../Image/icon/thunder-showers-night.png'),
   'thunder': require('../Image/icon/thunder.png'),
   'wind': require('../Image/icon/wind.png'),
@@ -52,6 +52,11 @@ const CurrentWeather = () => {
           <View style={styles.weatherBox}>
 
             <Image source={imageSources[data.currentConditions.icon]} style={styles.image} />
+            <Text style={styles.title2}>{data.currentConditions.conditions}</Text>
+            {
+              data.currentConditions.precipprob ? <Text style={styles.subtitle2}>{data.currentConditions.precipprob}%</Text> : null
+            }
+            
           </View>
 
           <View style={styles.weatherBox}>
@@ -155,8 +160,21 @@ paddingRight: 15,
     // fontFamily: "Poppins", // Set font to Poppins
   },
     image: {
-        width: 150,
-        height: 150,
+        width: 100,
+        height: 100,
+        resizeMode: "contain",
         
+    },
+    title2: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: "white", // Set font color to white
+      // fontFamily: "Poppins", // Set font to Poppins
+    },
+    subtitle2: {
+      fontSize: 10,
+      fontWeight: Platform.OS === 'android' ? 'normal' : '500',
+      color: "yellow", // Set font color to white
+      // fontFamily: "Poppins", // Set font to Poppins
     },
 };

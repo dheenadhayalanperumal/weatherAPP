@@ -43,7 +43,8 @@ const HourDataCollection = () => {
                         key={index}
                         time={formatTime(item.datetime)}  // Format the time here
                         temperature={item.temp}
-                        image={item.icon}  // Ensure 'icon' is the correct property name
+                        image={item.icon} 
+                        precip={item.precipprob} // Ensure 'icon' is the correct property name
                         isLastItem={index === hours.length - 1}  // Corrected from data.length
                     />
                 ))}

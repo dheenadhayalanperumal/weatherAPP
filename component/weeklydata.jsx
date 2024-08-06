@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image } from "react-native";
 import { useSelector } from "react-redux";
 
-const sun = require("../Image/icon/cloudy.png");
+// const sun = require("../Image/icon/cloudy.png");
 
 
 

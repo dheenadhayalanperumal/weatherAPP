@@ -27,7 +27,7 @@ const imageSources = {
   'wind': require('../Image/icon/wind.png'),
 };
 
-const HourData = ({ time, temperature, image, isLastItem }) => {
+const HourData = ({ time, temperature, image,precip, isLastItem }) => {
   return (
     <View
       style={[
@@ -42,6 +42,10 @@ const HourData = ({ time, temperature, image, isLastItem }) => {
           source={imageSources[image] || imageSources['cloudy']}
           style={styles.image}
         />
+        {
+          precip ? <Text style={styles.subtitle1}>{precip}%</Text> : null
+        }
+        
         <Text style={styles.subtitle}>{temperature}°C</Text>
       </View>
     </View>
@@ -91,5 +95,9 @@ resizeMode: "contain",
   subtitle: {
     color: "white",
     fontSize: 12,
+  },
+  subtitle1: {
+    color: "yellow",
+    fontSize: 8,
   },
 };
