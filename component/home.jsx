@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import { View, ScrollView, Text,ActivityIndicator } from "react-native";
 import SearchBar from "./SearchBar";
 import CurrentWeather from "./CurrentWeather";
