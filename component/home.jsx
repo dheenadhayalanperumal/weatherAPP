@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, ScrollView, Text,ActivityIndicator } from "react-native";
+import { View, ScrollView, Text,ActivityIndicator, Button } from "react-native";
 import SearchBar from "./SearchBar";
 import CurrentWeather from "./CurrentWeather";
 import ContentBox from "./ContentBox";
@@ -7,10 +7,13 @@ import HourDataCollection from "./HourdataColeection";
 import WeeklyData from "./weeklydata";
 import Sunset from "./Sunset";
 import { useSelector } from "react-redux"; // Import useSelector
+import { useDispatch } from "react-redux"; // Import useDispatch
+import { fetchWeatherData } from "../actions/weatherActions"; // Import fetchWeatherData
 
 
 
 const Home = () => {
+  const dispatch = useDispatch();
   
   const { data, loading, error } = useSelector((state) => state.weather);
 
@@ -21,7 +24,12 @@ if (loading) {
 }
 
 if (error) {
-  return <Text>Error: {error}</Text>;
+  return (
+    <View style={styles.container}>
+      <Text> {error}</Text>
+      <Button title="Retry" onPress={() => dispatch(fetchWeatherData("Chennai"))} />
+    </View>
+  );
 }
 
   return (
