@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, ScrollView, Text,ActivityIndicator, Button } from "react-native";
 import SearchBar from "./SearchBar";
 import CurrentWeather from "./CurrentWeather";
