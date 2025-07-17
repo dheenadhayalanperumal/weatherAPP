@@ -11,7 +11,7 @@ const WeeklyData = () => {
 
     // Check if data is null or undefined before logging
     if (data && data.days && data.days[0]) {
-        console.log(data.days[0].temp);
+        // console.log(data.days[0].temp);
     }
 
     // Check if data is null or undefined, or if days is not an array or empty
@@ -27,7 +27,12 @@ const WeeklyData = () => {
                     const date = new Date(day.datetime);
                     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     return (
-                        <View key={index} style={styles.smallbox}>
+                        <View 
+                            key={index} 
+                            style={styles.smallbox}
+                            accessibilityLabel={`${formattedDate} weather forecast`}
+                            accessibilityHint={`${day.conditions}, low ${day.tempmin} degrees, high ${day.tempmax} degrees celsius`}
+                        >
                             <Text style={styles.subtitle}>{formattedDate}</Text>
                             {/* <Image source={sun} style={styles.image} /> */}
                             <Text style={styles.subtitle}>{day.conditions}</Text>
@@ -66,13 +71,13 @@ const styles = {
         height: 30,
     },
     subtitle: {
-        color: "#5AB2FF",
+        color: "#1976D2", // Changed from light blue to darker blue for better contrast
         fontSize: 13,
         fontWeight: "normal",
 
     },
     title: {
-        color: "#3FA2F6",
+        color: "#1976D2", // Changed to darker blue for better contrast
         fontSize: 18,
         marginBottom: 10,
         fontWeight: "medium",

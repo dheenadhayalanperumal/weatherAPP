@@ -2,29 +2,26 @@
   "expo": {
     "name": "True Weather",
     "slug": "weatherapp",
-    "version": "1.0.1",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "version": "2.0.0",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "scheme": "yourapp",
+    "description": "Get accurate weather information for any city with beautiful animations and comprehensive forecasts. Features include current weather, hourly forecasts, weekly predictions, and detailed weather metrics.",
     "extra": {
       "eas": {
         "projectId": "1017dcd6-4092-404e-8229-98390b0ecbfa"
       }
     },
     "android": {
-      "package": "com.dheena007.weatherapp"
+      "package": "com.dheena007.weatherapp",
+      "versionCode": 2,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ]
     },
-    "sdkVersion": "51.0.0"  
+    "sdkVersion": "53.0.0"  
 }
 }

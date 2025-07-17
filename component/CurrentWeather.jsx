@@ -46,7 +46,11 @@ const CurrentWeather = () => {
   // console.log(weather);
   return (
     <View style={styles.container}>
-      <View style={styles.weatherContainer}>
+      <View 
+        style={styles.weatherContainer}
+        accessibilityLabel={`Current weather in ${data.address}`}
+        accessibilityHint={`${data.currentConditions.conditions}, ${data.currentConditions.temp} degrees celsius, feels like ${data.currentConditions.feelslike} degrees, minimum ${data.days[0].tempmin} degrees, maximum ${data.days[0].tempmax} degrees${data.currentConditions.precipprob ? `, precipitation ${data.currentConditions.precipprob} percent` : ''}`}
+      >
         
         <View style={styles.inner}>
           <View style={styles.weatherBox}>
@@ -174,7 +178,7 @@ paddingRight: 15,
     subtitle2: {
       fontSize: 10,
       fontWeight: Platform.OS === 'android' ? 'normal' : '500',
-      color: "yellow", // Set font color to white
+      color: "#FFFFFF", // Changed from yellow to white for better contrast
       // fontFamily: "Poppins", // Set font to Poppins
     },
 };

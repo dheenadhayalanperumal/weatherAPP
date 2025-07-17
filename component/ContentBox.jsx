@@ -20,23 +20,39 @@ const ContentBox = () => {
     return (
         <View style={styles.container}>
         <View style={styles.smallbox}>
-            <View style={styles.smallbox1}>
+            <View 
+                style={styles.smallbox1}
+                accessibilityLabel="Pressure"
+                accessibilityHint={`Current pressure is ${data.days[0].pressure} miles per hour`}
+            >
 <Image source={pressure} style={styles.image} />  
 <Text style={styles.subtitle}>Pressure</Text>              
 <Text style={styles.subtitle1}>{data.days[0].pressure} mph</Text>   
 
             </View>
-            <View style={styles.smallbox1}>
+            <View 
+                style={styles.smallbox1}
+                accessibilityLabel="Wind speed"
+                accessibilityHint={`Current wind speed is ${data.days[0].windspeed} kilometers per hour`}
+            >
             <Image source={wind} style={styles.image} />  
 <Text style={styles.subtitle}>Wind</Text>              
 <Text style={styles.subtitle1}>{data.days[0].windspeed}km/h</Text>  
             </View>
-            <View style={styles.smallbox1}>
+            <View 
+                style={styles.smallbox1}
+                accessibilityLabel="Humidity"
+                accessibilityHint={`Current humidity is ${data.days[0].humidity} percent`}
+            >
             <Image source={humidity} style={styles.image} />  
 <Text style={styles.subtitle}>Humidity</Text>              
 <Text style={styles.subtitle1}>{data.days[0].humidity}%</Text>  
             </View>
-            <View style={styles.smallbox1}>
+            <View 
+                style={styles.smallbox1}
+                accessibilityLabel="UV Index"
+                accessibilityHint={`Current UV index is ${data.days[0].uvindex} out of 10`}
+            >
             <Image source={uv} style={styles.image} />  
 <Text style={styles.subtitle}>UV Index</Text>              
 <Text style={styles.subtitle1}>{data.days[0].uvindex} of 10</Text>  
@@ -66,7 +82,9 @@ const styles = {
        
     },
     smallbox1: {
-        width: 80,
+        width: Math.max(80, 48), // Ensure minimum 48dp width
+        minWidth: 48,
+        minHeight: 48,
         backgroundColor: "#00C1F6",
         borderRadius: 10,
         display: "flex",

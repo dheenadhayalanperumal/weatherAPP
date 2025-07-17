@@ -22,7 +22,11 @@ const Sunset = () => {
 
   return (
     <View style={styles.container}>
-    <View style={styles.box}>
+    <View 
+      style={styles.box}
+      accessibilityLabel="Sunrise and sunset times"
+      accessibilityHint={`Sunrise at ${formatTime(data.days[0].sunrise)}, sunset at ${formatTime(data.days[0].sunset)}`}
+    >
       
        <View style={styles.set}>
         <Image source={sunset} style={styles.image} />

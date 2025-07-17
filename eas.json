@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 10.2.1"
+    "version": ">= 10.2.1",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -12,9 +13,19 @@
         "buildType": "apk"
        }
     },
-    "production": {}
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./pc-api-6591311024591092539-901-27bf7b5cbf8e.json",
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    }
   }
 }

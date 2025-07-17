@@ -35,7 +35,11 @@ const HourData = ({ time, temperature, image,precip, isLastItem }) => {
         isLastItem ? styles.noMargin : styles.marginRight,
       ]}
     >
-      <View style={styles.smallbox}>
+      <View 
+        style={styles.smallbox}
+        accessibilityLabel={`${time} hourly forecast`}
+        accessibilityHint={`Temperature ${temperature} degrees celsius${precip ? `, precipitation ${precip} percent` : ''}`}
+      >
         <Text style={styles.subtitle}>{time}</Text>
 
         <Image
@@ -66,8 +70,10 @@ const styles = {
     marginRight: 0,
   },
   smallbox: {
-    height: 96,
-    width: 80,
+    height: Math.max(96, 48), // Ensure minimum 48dp height
+    width: Math.max(80, 48), // Ensure minimum 48dp width
+    minWidth: 48,
+    minHeight: 48,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -97,7 +103,7 @@ resizeMode: "contain",
     fontSize: 12,
   },
   subtitle1: {
-    color: "yellow",
+    color: "#FFFFFF", // Changed from yellow to white for better contrast
     fontSize: 8,
   },
 };
