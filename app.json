@@ -25,6 +25,9 @@
     "android": {
       "package": "com.dheena007.weatherapp"
     },
-    "sdkVersion": "51.0.0"  
-}
+    "sdkVersion": "51.0.0",
+    "ios": {
+      "bundleIdentifier": "com.dheena007.weatherapp"
+    }
+  }
 }
