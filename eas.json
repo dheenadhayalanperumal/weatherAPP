@@ -1,18 +1,26 @@
 {
   "cli": {
-    "version": ">= 10.2.1"
+    "version": ">= 10.2.1",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "environment": "development"
     },
     "preview": {
-       "android": {
+      "android": {
         "buildType": "apk"
-       }
+      },
+      "environment": "preview"
     },
-    "production": {}
+    "production": {
+      "environment": "production",
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
   },
   "submit": {
     "production": {}

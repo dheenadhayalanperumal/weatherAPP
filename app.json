@@ -2,7 +2,7 @@
   "expo": {
     "name": "True Weather",
     "slug": "weatherapp",
-    "version": "1.0.2",
+    "version": "2.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -18,7 +18,7 @@
     },
     "android": {
       "package": "com.dheena007.weatherapp",
-      "versionCode": 3,
+      "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -36,6 +36,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.dheena007.weatherapp",
+      "buildNumber": "6",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "True Weather uses your location to show the forecast where you are. Your location is only used to look up the weather and is never stored or shared."
       }
