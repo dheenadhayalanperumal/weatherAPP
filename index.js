@@ -1,14 +1,19 @@
 import { registerRootComponent } from 'expo';
-import React from 'react'; // Import React
-import { Provider } from 'react-redux'; // Import Provider
+import React from 'react';
+import { Provider } from 'react-redux';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import App from './App';
-import store from './store'; // Make sure to create this file and configure your Redux store
+import ErrorBoundary from './component/ErrorBoundary';
+import store from './store';
 
 const ReduxApp = () => (
   <Provider store={store}>
-    <App />
+    <SafeAreaProvider>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </SafeAreaProvider>
   </Provider>
 );
 
-// Register the ReduxApp component instead of App
 registerRootComponent(ReduxApp);

@@ -19,7 +19,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.1</string>
+    <string>1.0.2</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -27,15 +27,27 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>yourapp</string>
+          <!-- Was "yourapp", the Expo template placeholder, so the
+               "trueweather" scheme declared in app.json resolved on neither
+               platform. -->
+          <string>trueweather</string>
           <string>com.dheena007.weatherapp</string>
         </array>
       </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>12.0</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <!-- Required for the "use my current location" search. iOS shows this exact
+         string in the permission dialog, so it names the benefit rather than
+         restating the request. Foreground only — there is no
+         NSLocationAlwaysAndWhenInUseUsageDescription because the app never
+         reads location in the background. -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>True Weather uses your location to show the forecast where you are. Your location is only used to look up the weather and is never stored or shared.</string>
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
@@ -58,15 +70,11 @@
       <string>UIInterfaceOrientationPortrait</string>
       <string>UIInterfaceOrientationPortraitUpsideDown</string>
     </array>
-    <key>UISupportedInterfaceOrientations~ipad</key>
-    <array>
-      <string>UIInterfaceOrientationPortrait</string>
-      <string>UIInterfaceOrientationPortraitUpsideDown</string>
-      <string>UIInterfaceOrientationLandscapeLeft</string>
-      <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
+    <!-- Was "Light", which pins the whole app to the light appearance on iOS
+         regardless of the system setting, so `useColorScheme()` would never
+         report "dark". "Automatic" hands the choice back to the OS. -->
     <key>UIUserInterfaceStyle</key>
-    <string>Light</string>
+    <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
   </dict>

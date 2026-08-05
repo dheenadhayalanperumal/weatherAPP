@@ -1,6 +1,7 @@
 <resources>
-  <color name="splashscreen_background">#ffffff</color>
-  <color name="iconBackground">#FFFFFF</color>
+  <!-- Was #ffffff while app.json declared #CAF4FF, so the splash flashed white
+       before the themed background appeared. Matches palettes.light.background. -->
+  <color name="splashscreen_background">#CAF4FF</color>
+  <color name="iconBackground">#ffffff</color>
   <color name="colorPrimary">#023c69</color>
-  <color name="colorPrimaryDark">#ffffff</color>
 </resources>

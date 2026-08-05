@@ -1,110 +1,115 @@
 import React from "react";
-import { Platform } from 'react-native';
+import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import { Text, View , Image} from "react-native";
+import AppText from "./AppText";
+import {
+  spacing,
+  radius,
+  size,
+  type,
+  lineHeight,
+  weight,
+  useThemedStyles,
+} from "../theme";
 
-const pressure = require("../Image/pressure.gif");
-const wind = require("../Image/wind.gif");
-const humidity = require("../Image/humidity.gif");
-const uv = require("../Image/uv-index.gif");
+const icons = {
+  pressure: require("../Image/pressure.gif"),
+  wind: require("../Image/wind.gif"),
+  humidity: require("../Image/humidity.gif"),
+  uv: require("../Image/uv-index.gif"),
+};
+
+// Visual Crossing omits fields for sparse stations — `uvindex` and `pressure`
+// especially. Interpolating a missing value produced the literal text
+// "null mb" on the tile.
+const format = (value, unit = "") => (value == null ? "—" : `${value}${unit}`);
+
+// `styles` is threaded down rather than read from module scope, because it is
+// now rebuilt when the colour scheme changes.
+const Metric = ({ icon, label, value, styles }) => (
+  <View style={styles.tile} accessible accessibilityLabel={`${label}: ${value}`}>
+    <Image source={icon} style={styles.image} accessibilityElementsHidden importantForAccessibility="no" />
+    {/* Two lines allowed: on a 320pt screen each tile is only ~65pt wide, and
+        at a large system font scale "Humidity" and "UV Index" no longer fit on
+        one line — they were previously clipped by `numberOfLines={1}`. */}
+    <AppText style={styles.label} numberOfLines={2}>
+      {label}
+    </AppText>
+    <AppText style={styles.value} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+      {value}
+    </AppText>
+  </View>
+);
 
 const ContentBox = () => {
+  const today = useSelector((state) => state.weather.data?.days?.[0]);
+  const styles = useThemedStyles(makeStyles);
 
-    const { data, loading, error } = useSelector((state) => state.weather);
+  if (!today) return null;
 
-    if (!data)  
-        {
-        return <Text>No data available</Text>;  
-        }
-
-    return (
-        <View style={styles.container}>
-        <View style={styles.smallbox}>
-            <View style={styles.smallbox1}>
-<Image source={pressure} style={styles.image} />  
-<Text style={styles.subtitle}>Pressure</Text>              
-<Text style={styles.subtitle1}>{data.days[0].pressure} mph</Text>   
-
-            </View>
-            <View style={styles.smallbox1}>
-            <Image source={wind} style={styles.image} />  
-<Text style={styles.subtitle}>Wind</Text>              
-<Text style={styles.subtitle1}>{data.days[0].windspeed}km/h</Text>  
-            </View>
-            <View style={styles.smallbox1}>
-            <Image source={humidity} style={styles.image} />  
-<Text style={styles.subtitle}>Humidity</Text>              
-<Text style={styles.subtitle1}>{data.days[0].humidity}%</Text>  
-            </View>
-            <View style={styles.smallbox1}>
-            <Image source={uv} style={styles.image} />  
-<Text style={styles.subtitle}>UV Index</Text>              
-<Text style={styles.subtitle1}>{data.days[0].uvindex} of 10</Text>  
-            </View>
-        </View>
-        </View>
-    );
-    };
+  return (
+    <View style={styles.container}>
+      <View style={styles.row}>
+        {/* The API is called with `unitGroup=uk`, under which Visual Crossing
+            returns pressure in millibars and wind speed in mph. These were
+            previously labelled "mph" and "km/h" respectively — the pressure
+            label was a speed unit, and the wind label was the wrong one. */}
+        <Metric icon={icons.pressure} label="Pressure" value={format(today.pressure, " mb")} styles={styles} />
+        <Metric icon={icons.wind} label="Wind" value={format(today.windspeed, " mph")} styles={styles} />
+        <Metric icon={icons.humidity} label="Humidity" value={format(today.humidity, "%")} styles={styles} />
+        <Metric icon={icons.uv} label="UV Index" value={format(today.uvindex)} styles={styles} />
+      </View>
+    </View>
+  );
+};
 
 export default ContentBox;
 
-const styles = {    
+const makeStyles = ({ colors, cardShadow }) =>
+  StyleSheet.create({
     container: {
-        flex: 1,
-        width: "100%",  
-        paddingLeft: 15,
-        paddingRight: 15,
+      paddingHorizontal: spacing.lg,
     },
-
-    smallbox: {
-        height: 96,
-        marginTop: 15,
-        // marginLeft: -15,
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-       
+    row: {
+      flexDirection: "row",
+      marginTop: spacing.lg,
+      gap: spacing.md,
     },
-    smallbox1: {
-        width: 80,
-        backgroundColor: "#00C1F6",
-        borderRadius: 10,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap:4,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.36,
-        shadowRadius: 2,
-        elevation: 2
-
-    
-
+    tile: {
+      // Was a fixed `width: 80`. Four 80pt tiles need 320pt, but a 320pt-wide
+      // device only has 290pt after padding, so the UV tile was clipped off
+      // screen. `flex: 1` divides the available width instead.
+      flex: 1,
+      minHeight: size.tile,
+      backgroundColor: colors.card,
+      borderRadius: radius.md,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: spacing.md,
+      // The tile had vertical padding but none horizontal, so its text ran to the
+      // very edge of the card on narrow screens.
+      paddingHorizontal: spacing.xs,
+      gap: spacing.xs,
+      ...cardShadow,
     },
     image: {
-        width: 30,
-        height: 30,
-        resizeMode: "contain",
-        
+      width: size.iconSm,
+      height: size.iconSm,
+      resizeMode: "contain",
     },
-    subtitle: {
-        color: '#FFFFFF', 
-        fontWeight: Platform.OS === 'android' ? 'medium' : '500',
-        fontSize: 14,
-       
+    label: {
+      color: colors.onCard,
+      fontWeight: weight.medium,
+      fontSize: type.caption,
+      lineHeight: lineHeight.caption,
+      textAlign: "center",
     },
-    subtitle1: {
-        color: '#FFFFFF', 
-        fontWeight: Platform.OS === 'android' ? 'normal' : '300',
-        fontSize: 12,
-       
+    value: {
+      color: colors.onCardMuted,
+      fontWeight: weight.regular,
+      fontSize: type.caption,
+      lineHeight: lineHeight.caption,
+      textAlign: "center",
     },
-    
-
-};
-
+  
+  });

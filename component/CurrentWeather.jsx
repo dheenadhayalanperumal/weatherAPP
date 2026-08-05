@@ -1,180 +1,184 @@
 import React from "react";
-import { Platform } from 'react-native';
+import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
+import AppText from "./AppText";
+import { weatherIcon } from "./weatherIcons";
+import {
+  spacing,
+  radius,
+  size,
+  type,
+  lineHeight,
+  weight,
+  useThemedStyles,
+} from "../theme";
 
-import { Text, View, Dimensions, Image } from "react-native";
-
-const { width, height } = Dimensions.get("window");
-
-
-
-const imageSources = {
-  'clear-day': require('../Image/icon/clear-day.png'),
-  'clear-night': require('../Image/icon/clear-night.png'),
-  'cloudy': require('../Image/icon/cloudy.png'),
-  'fog': require('../Image/icon/fog.png'),
-  'hail': require('../Image/icon/hail.png'),
-  'partly-cloudy-day': require('../Image/icon/partly-cloudy-day.png'),
-  'partly-cloudy-night': require('../Image/icon/partly-cloudy-night.png'),
-  'rain-snow-showers-day': require('../Image/icon/rain-snow-showers-day.png'),
-  'rain-snow-showers-night': require('../Image/icon/rain-snow-showers-night.png'),
-  'rain-snow': require('../Image/icon/rain-snow.png'),
-  'rain': require('../Image/icon/rain.png'),
-  'showers-day': require('../Image/icon/showers-day.png'),
-  'showers-night': require('../Image/icon/showers-night.png'),
-  'sleet': require('../Image/icon/sleet.png'),
-  'snow-showers-day': require('../Image/icon/snow-showers-day.png'),
-  'snow-showers-night': require('../Image/icon/snow-showers-night.png'),
-  'snow': require('../Image/icon/snow.png'),
-  'thunder-rain': require('../Image/icon/thunder-rain.png'),
-  'thunder-showers-day': require('../Image/icon/thunder-showers-day.png'),
-  'thunder-showers-night': require('../Image/icon/thunder-showers-night.png'),
-  'thunder': require('../Image/icon/thunder.png'),
-  'wind': require('../Image/icon/wind.png'),
-  // 'default': require('../Image/icon/default.png'), // Default image
-};
+const formatTemp = (value) => (value == null ? "—" : `${value}°C`);
 
 const CurrentWeather = () => {
-  const { data, loading, error } = useSelector((state) => state.weather);
+  const data = useSelector((state) => state.weather.data);
+  const styles = useThemedStyles(makeStyles);
 
-  // console.log(data.currentConditions.icon);
+  // Guards the paths actually dereferenced below. The old `if (!data)` check
+  // passed for any 200 response with a partial body, then threw on
+  // `data.currentConditions.icon` and white-screened the app.
+  const current = data?.currentConditions;
+  const today = data?.days?.[0];
+  if (!current) return null;
 
-  if (!data) {
-    return <Text>No weather data available</Text>;
-  }
+  // `address` is the raw string the API was queried with — so it showed the
+  // user's own lowercase typing ("chennai"), and after a current-location
+  // lookup it would have shown bare coordinates ("13.08,80.27").
+  // `resolvedAddress` is the place the service actually matched.
+  const place = data.resolvedAddress || data.address || "";
+  // "Chennai, Tamil Nadu, India" does not fit the half-width column, so the
+  // locality leads and the full string goes to the screen reader.
+  const shortPlace = place.split(",")[0].trim() || place;
 
-  // console.log(weather);
+  const cardLabel = [
+    place ? `Weather in ${place}` : "Current weather",
+    current.conditions,
+    `${formatTemp(current.temp)}`,
+    `feels like ${formatTemp(current.feelslike)}`,
+    current.precipprob ? `${current.precipprob} percent chance of rain` : null,
+    today ? `low ${formatTemp(today.tempmin)}, high ${formatTemp(today.tempmax)}` : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
   return (
     <View style={styles.container}>
-      <View style={styles.weatherContainer}>
-        
+      {/* Grouped into a single accessibility node. Every other card already
+          composes one label; this one exposed six separate stops, and the
+          all-caps "FEELS LIKE" was read out letter by letter by VoiceOver. */}
+      <View style={styles.card} accessible accessibilityLabel={cardLabel}>
         <View style={styles.inner}>
-          <View style={styles.weatherBox}>
-
-            <Image source={imageSources[data.currentConditions.icon]} style={styles.image} />
-            <Text style={styles.title2}>{data.currentConditions.conditions}</Text>
-            {
-              data.currentConditions.precipprob ? <Text style={styles.subtitle2}>{data.currentConditions.precipprob}%</Text> : null
-            }
-            
+          <View style={styles.column}>
+            <Image
+              source={weatherIcon(current.icon)}
+              style={styles.image}
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
+            <AppText style={styles.conditions} numberOfLines={2}>
+              {current.conditions}
+            </AppText>
+            {current.precipprob ? (
+              <AppText style={styles.precip}>
+                {current.precipprob}% chance of rain
+              </AppText>
+            ) : null}
           </View>
 
-          <View style={styles.weatherBox}>
-          <Text style={styles.title}>{data.address}</Text>
-            <Text style={styles.temp}>{data.currentConditions.temp}°C</Text>
-
-            <Text style={styles.title}>FEEL LIKE</Text>
-
-            <Text style={styles.subtitle}>{data.currentConditions.feelslike}°C</Text>
+          <View style={styles.column}>
+            <AppText style={styles.address} numberOfLines={1} ellipsizeMode="tail">
+              {shortPlace}
+            </AppText>
+            <AppText style={styles.temp} maxFontSizeMultiplier={1.2}>
+              {formatTemp(current.temp)}
+            </AppText>
+            <AppText style={styles.label}>FEELS LIKE</AppText>
+            <AppText style={styles.feelsLike}>{formatTemp(current.feelslike)}</AppText>
           </View>
         </View>
-        <View style={styles.weatherBox1}>
-          <Text style={styles.subtitle1}>Min Temp {data.days[0].tempmin}°C</Text>
 
-          <Text style={styles.subtitle1}>Max Temp {data.days[0].tempmax}°C</Text>
-        </View>
+        {today ? (
+          <View style={styles.minMaxRow}>
+            <AppText style={styles.minMax}>Min {formatTemp(today.tempmin)}</AppText>
+            <AppText style={styles.minMax}>Max {formatTemp(today.tempmax)}</AppText>
+          </View>
+        ) : null}
       </View>
     </View>
   );
 };
 
 export default CurrentWeather;
-const styles = {
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-paddingLeft: 15,
-paddingRight: 15,
-     // This sets the color for the container, but not for text elements inside it
-  },
 
-  
-  weatherContainer: {
-    // padding: 10,
-    width: width - 30,
-    height: 210,
-    backgroundColor: "#00C1F6",
-    borderRadius: 10,
-    marginTop: 15,
-    display: "flex",
-    flexDirection: "column",
-    // alignItems: "center",
-    justifyContent: "space-evenly",
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 3,
+const makeStyles = ({ colors, cardShadow }) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: spacing.lg,
     },
-    shadowOpacity: 0.36,
-    shadowRadius: 3,
-    elevation: 3,
-    
-  },
-  inner: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-
-  weatherBox: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
-  },
-  weatherBox1: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "left",
-    justifyContent: "space-between",
-    paddingLeft: 20,
-    paddingRight: 20,
-
-   
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "medium",
-    color: "white", // Set font color to white
-    // fontFamily: "Poppins", // Set font to Poppins
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: Platform.OS === 'android' ? 'normal' : '500',
-    color: "white", // Set font color to white
-    // fontFamily: "Poppins", // Set font to Poppins
-  },
-  temp: {
-    fontSize: 36,
-    fontWeight: Platform.OS === 'android' ? 'bold' : '700',
-    color: "white", // Set font color to white
-    // fontFamily: "Poppins", // Set font to Poppins
-  },
-  subtitle1: {
-    fontSize: 12,
-    fontWeight: Platform.OS === 'android' ? 'normal' : '500',
-    color: "white", // Set font color to white
-    // fontFamily: "Poppins", // Set font to Poppins
-  },
+    card: {
+      // `minHeight` rather than a fixed 210 so the card grows instead of clipping
+      // when the OS font size is increased.
+      minHeight: size.heroCard,
+      alignSelf: "stretch",
+      backgroundColor: colors.card,
+      borderRadius: radius.md,
+      marginTop: spacing.lg,
+      justifyContent: "space-evenly",
+      paddingVertical: spacing.lg,
+      ...cardShadow,
+    },
+    inner: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-evenly",
+    },
+    column: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing.xs,
+      paddingHorizontal: spacing.sm,
+    },
     image: {
-        width: 100,
-        height: 100,
-        resizeMode: "contain",
-        
+      width: size.iconLg,
+      height: size.iconLg,
+      resizeMode: "contain",
     },
-    title2: {
-      fontSize: 20,
-      fontWeight: "bold",
-      color: "white", // Set font color to white
-      // fontFamily: "Poppins", // Set font to Poppins
+    conditions: {
+      fontSize: type.title,
+      lineHeight: lineHeight.title,
+      fontWeight: weight.bold,
+      color: colors.onCard,
+      textAlign: "center",
     },
-    subtitle2: {
-      fontSize: 10,
-      fontWeight: Platform.OS === 'android' ? 'normal' : '500',
-      color: "yellow", // Set font color to white
-      // fontFamily: "Poppins", // Set font to Poppins
+    precip: {
+      fontSize: type.caption, // was 8px, below the practical legibility floor
+      lineHeight: lineHeight.caption,
+      fontWeight: weight.regular,
+      color: colors.onCardAccent,
+      textAlign: "center",
     },
-};
+    address: {
+      fontSize: type.heading,
+      lineHeight: lineHeight.heading,
+      fontWeight: weight.medium, // was the invalid "medium" string
+      color: colors.onCard,
+      textAlign: "center",
+    },
+    temp: {
+      fontSize: type.temp,
+      fontWeight: weight.bold,
+      color: colors.onCard,
+    },
+    label: {
+      fontSize: type.label,
+      lineHeight: lineHeight.label,
+      fontWeight: weight.medium,
+      color: colors.onCardMuted,
+    },
+    feelsLike: {
+      fontSize: type.body,
+      lineHeight: lineHeight.body,
+      fontWeight: weight.medium,
+      color: colors.onCard,
+    },
+    minMaxRow: {
+      flexDirection: "row",
+      // was `alignItems: "left"`, not a valid flexbox value and silently ignored
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: spacing.xl,
+      paddingTop: spacing.md,
+    },
+    minMax: {
+      fontSize: type.caption,
+      lineHeight: lineHeight.caption,
+      fontWeight: weight.medium,
+      color: colors.onCard,
+    },
+  });

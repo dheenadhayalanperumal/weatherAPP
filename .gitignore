@@ -11,6 +11,8 @@ web-build/
 # Native
 *.orig.*
 *.jks
+*.keystore
+!android/app/debug.keystore
 *.p8
 *.p12
 *.key
@@ -29,6 +31,7 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript

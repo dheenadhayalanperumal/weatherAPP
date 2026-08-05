@@ -1,103 +1,109 @@
 import React from "react";
-import { Text, View, Image } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
+import AppText from "./AppText";
+import { weatherIcon } from "./weatherIcons";
+import {
+  spacing,
+  radius,
+  size,
+  type,
+  lineHeight,
+  weight,
+  useThemedStyles,
+} from "../theme";
 
-// Object to map image names to their respective require statements
-const imageSources = {
-  'clear-day': require('../Image/icon/clear-day.png'),
-  'clear-night': require('../Image/icon/clear-night.png'),
-  'cloudy': require('../Image/icon/cloudy.png'),
-  'fog': require('../Image/icon/fog.png'),
-  'hail': require('../Image/icon/hail.png'),
-  'partly-cloudy-day': require('../Image/icon/partly-cloudy-day.png'),
-  'partly-cloudy-night': require('../Image/icon/partly-cloudy-night.png'),
-  'rain-snow-showers-day': require('../Image/icon/rain-snow-showers-day.png'),
-  'rain-snow-showers-night': require('../Image/icon/rain-snow-showers-night.png'),
-  'rain-snow': require('../Image/icon/rain-snow.png'),
-  'rain': require('../Image/icon/rain.png'),
-  'showers-day': require('../Image/icon/showers-day.png'),
-  'showers-night': require('../Image/icon/showers-night.png'),
-  'sleet': require('../Image/icon/sleet.png'),
-  'snow-showers-day': require('../Image/icon/snow-showers-day.png'),
-  'snow-showers-night': require('../Image/icon/snow-showers-night.png'),
-  'snow': require('../Image/icon/snow.png'),
-  'thunder-rain': require('../Image/icon/thunder-rain.png'),
-  'thunder-showers-day': require('../Image/icon/thunder-showers-day.png'),
-  'thunder-showers-night': require('../Image/icon/thunder-showers-night.png'),
-  'thunder': require('../Image/icon/thunder.png'),
-  'wind': require('../Image/icon/wind.png'),
-};
+// Visual Crossing omits fields on sparse stations, and `${null}°C` renders the
+// literal string "null°C".
+const formatTemp = (value) => (value == null ? "—" : `${value}°C`);
 
-const HourData = ({ time, temperature, image,precip, isLastItem }) => {
+const HourData = ({ time, temperature, image, precip, isCurrent, isLastItem }) => {
+  const styles = useThemedStyles(makeStyles);
+  const hasPrecip = precip != null && precip > 0;
+
+  const label = `${time}, ${temperature == null ? "temperature unavailable" : `${temperature} degrees`}${
+    hasPrecip ? `, ${precip} percent chance of rain` : ""
+  }`;
+
   return (
     <View
-      style={[
-        styles.container,
-        isLastItem ? styles.noMargin : styles.marginRight,
-      ]}
+      style={[styles.tile, isCurrent && styles.tileCurrent, !isLastItem && styles.spacer]}
+      accessible
+      accessibilityLabel={label}
     >
-      <View style={styles.smallbox}>
-        <Text style={styles.subtitle}>{time}</Text>
-
-        <Image
-          source={imageSources[image] || imageSources['cloudy']}
-          style={styles.image}
-        />
-        {
-          precip ? <Text style={styles.subtitle1}>{precip}%</Text> : null
-        }
-        
-        <Text style={styles.subtitle}>{temperature}°C</Text>
+      <AppText style={styles.time}>{time}</AppText>
+      <Image
+        source={weatherIcon(image)}
+        style={styles.image}
+        accessibilityElementsHidden
+        importantForAccessibility="no"
+      />
+      {/* The precipitation row is always laid out, even when there is nothing
+          to show. It used to be conditionally rendered inside a
+          `justifyContent: "space-between"` column, so dry tiles had three
+          children and rainy ones had four — the icons and temperatures then sat
+          at different heights from tile to tile and the strip looked broken on
+          any mixed-forecast day. */}
+      <View style={styles.precipSlot}>
+        {hasPrecip ? <AppText style={styles.precip}>{precip}%</AppText> : null}
       </View>
+      <AppText style={styles.temp}>{formatTemp(temperature)}</AppText>
     </View>
   );
 };
 
-export default HourData;
+// The list re-creates its rows on every parent render; without this all 24
+// tiles re-render whenever anything in the tree above changes.
+export default React.memo(HourData);
 
-const styles = {
-  container: {
-    flex: 1,
-    
-  },
-  marginRight: {
-    marginRight: 10, // This handles the spacing between items
-  },
-  noMargin: {
-    marginRight: 0,
-  },
-  smallbox: {
-    height: 96,
-    width: 80,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    backgroundColor: "#00C1F6",
-    alignItems: "center",
-    borderRadius: 10,
-    padding: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 3,
+const makeStyles = ({ colors, cardShadow }) =>
+  StyleSheet.create({
+    tile: {
+      // `minHeight` so the tile grows rather than clipping at larger font scales.
+      minHeight: size.tile,
+      width: size.tileWidth,
+      justifyContent: "space-between",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+      ...cardShadow,
     },
-    shadowOpacity: 0.36,
-    shadowRadius: 3,
-    elevation: 3,
-    marginBottom: 10
-    ,
-    
-  },
-  image: {
-    width: 30,
-    height: 30,
-resizeMode: "contain",
-  },
-  subtitle: {
-    color: "white",
-    fontSize: 12,
-  },
-  subtitle1: {
-    color: "yellow",
-    fontSize: 8,
-  },
-};
+    tileCurrent: {
+      borderWidth: 2,
+      borderColor: colors.heading,
+    },
+    spacer: {
+      // `marginEnd` rather than `marginRight`, so the gap follows the reading
+      // direction under a right-to-left locale.
+      marginEnd: spacing.md,
+    },
+    image: {
+      width: size.iconSm,
+      height: size.iconSm,
+      resizeMode: "contain",
+    },
+    time: {
+      color: colors.onCard,
+      fontSize: type.caption,
+      lineHeight: lineHeight.caption,
+      fontWeight: weight.medium,
+    },
+    temp: {
+      color: colors.onCard,
+      fontSize: type.caption,
+      lineHeight: lineHeight.caption,
+      fontWeight: weight.medium,
+    },
+    precipSlot: {
+      height: lineHeight.caption,
+      justifyContent: "center",
+    },
+    precip: {
+      // Was 8px yellow at 1.96:1 — genuinely useful information rendered
+      // essentially unreadable.
+      color: colors.onCardAccent,
+      fontSize: type.caption,
+      lineHeight: lineHeight.caption,
+    },
+  });

@@ -2,32 +2,66 @@
   "expo": {
     "name": "True Weather",
     "slug": "weatherapp",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "userInterfaceStyle": "automatic",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
-    "scheme": "yourapp",
+    "scheme": "trueweather",
     "extra": {
       "eas": {
         "projectId": "1017dcd6-4092-404e-8229-98390b0ecbfa"
       }
     },
     "android": {
-      "package": "com.dheena007.weatherapp"
+      "package": "com.dheena007.weatherapp",
+      "versionCode": 3,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
-    "sdkVersion": "51.0.0",
     "ios": {
-      "bundleIdentifier": "com.dheena007.weatherapp"
-    }
+      "bundleIdentifier": "com.dheena007.weatherapp",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "True Weather uses your location to show the forecast where you are. Your location is only used to look up the weather and is never stored or shared."
+      }
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#CAF4FF",
+          "dark": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#0A1620"
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "True Weather uses your location to show the forecast where you are. Your location is only used to look up the weather and is never stored or shared.",
+          "isAndroidBackgroundLocationEnabled": false,
+          "isIosBackgroundLocationEnabled": false
+        }
+      ]
+    ]
   }
 }
