@@ -1,46 +1,33 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import React, { useCallback } from "react";
+import { View, Pressable, StyleSheet } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import AppText from "./AppText";
+import { selectDay } from "../reducers/weatherReducer";
+import { formatRowDate } from "./dateUtils";
 import {
   spacing,
   radius,
   type,
   lineHeight,
   weight,
+  useTheme,
   useThemedStyles,
+  MIN_TOUCH_TARGET,
 } from "../theme";
 
 // Visual Crossing's timeline endpoint returns 15 days by default, and the list
 // rendered every one of them under a heading that said "Weekly".
 const DAYS_SHOWN = 7;
 
-// `new Date("2026-08-05")` parses as UTC midnight but `toLocaleDateString`
-// formats in local time, so every row rendered as the previous day for any user
-// west of UTC. Parsing the components explicitly yields local midnight.
-const parseLocalDate = (isoDate) => {
-  if (typeof isoDate !== "string") return null;
-  const [y, m, d] = isoDate.split("-").map(Number);
-  if (!y || !m || !d) return null;
-  return new Date(y, m - 1, d);
-};
-
-const formatRowDate = (isoDate, index) => {
-  const date = parseLocalDate(isoDate);
-  if (!date) return isoDate ?? "";
-  if (index === 0) return "Today";
-  return date.toLocaleDateString(undefined, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-};
-
 const formatTemp = (value) => (value == null ? "—" : value);
 
 const WeeklyData = () => {
   const days = useSelector((state) => state.weather.data?.days);
   const styles = useThemedStyles(makeStyles);
+  const { ripple } = useTheme();
+  const dispatch = useDispatch();
+
+  const openDay = useCallback((index) => dispatch(selectDay(index)), [dispatch]);
 
   if (!Array.isArray(days) || days.length === 0) return null;
 
@@ -57,11 +44,14 @@ const WeeklyData = () => {
           return (
             // Keyed on the date rather than the array index so React does not
             // reuse rows across entirely unrelated cities.
-            <View
+            <Pressable
               key={day.datetime ?? index}
-              style={styles.row}
-              accessible
+              onPress={() => openDay(index)}
+              android_ripple={ripple}
+              accessibilityRole="button"
               accessibilityLabel={`${rowDate}: ${day.conditions}, low ${formatTemp(day.tempmin)}, high ${formatTemp(day.tempmax)} degrees Celsius`}
+              accessibilityHint="Opens the full forecast for this day"
+              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
             >
               <AppText style={styles.date} numberOfLines={1}>
                 {rowDate}
@@ -74,7 +64,12 @@ const WeeklyData = () => {
               <AppText style={styles.temp} numberOfLines={1}>
                 {formatTemp(day.tempmin)}/{formatTemp(day.tempmax)}°C
               </AppText>
-            </View>
+              {/* A chevron is the only thing that tells the user these rows do
+                  anything at all — without it the whole feature is invisible. */}
+              <AppText style={styles.chevron} accessibilityElementsHidden importantForAccessibility="no">
+                ›
+              </AppText>
+            </Pressable>
           );
         })}
       </View>
@@ -103,11 +98,21 @@ const makeStyles = ({ colors }) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
+      // Rows are interactive now, so they carry a real touch target.
+      minHeight: MIN_TOUCH_TARGET,
       marginVertical: spacing.xs,
       padding: spacing.md,
       backgroundColor: colors.surface,
       borderRadius: radius.sm,
       gap: spacing.sm,
+      overflow: "hidden", // clips the Android ripple to the rounded corners
+    },
+    rowPressed: { opacity: 0.7 },
+    chevron: {
+      color: colors.onSurface,
+      fontSize: type.heading,
+      lineHeight: lineHeight.heading,
+      opacity: 0.55,
     },
     date: {
       flex: 1.1,
@@ -124,7 +129,7 @@ const makeStyles = ({ colors }) =>
       fontWeight: weight.regular,
     },
     temp: {
-      flex: 1,
+      flex: 1.05,
       // React Native's `textAlign` accepts only physical values
       // (auto|left|right|center|justify) — there is no logical `end`. This is
       // correct for the app as it ships; supporting a right-to-left locale would

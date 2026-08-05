@@ -41,10 +41,13 @@ const Metric = ({ icon, label, value, styles }) => (
   </View>
 );
 
-const ContentBox = () => {
-  const today = useSelector((state) => state.weather.data?.days?.[0]);
+// `day` overrides the store lookup so the day-detail screen can render the
+// same tiles for a day other than today.
+const ContentBox = ({ day }) => {
+  const storeToday = useSelector((state) => state.weather.data?.days?.[0]);
   const styles = useThemedStyles(makeStyles);
 
+  const today = day ?? storeToday;
   if (!today) return null;
 
   return (

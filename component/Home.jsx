@@ -17,6 +17,7 @@ import ContentBox from "./ContentBox";
 import HourDataCollection from "./HourDataCollection";
 import WeeklyData from "./WeeklyData";
 import Sunset from "./Sunset";
+import DayDetail from "./DayDetail";
 import { retryLastQuery } from "../actions/weatherActions";
 import {
   spacing,
@@ -93,6 +94,7 @@ const Home = () => {
   // that unmounted <SearchBar />, so a mistyped city left the user with no way
   // to search again.
   return (
+    <>
     <ScrollView
       style={styles.scroll}
       contentContainerStyle={[
@@ -183,6 +185,12 @@ const Home = () => {
         </View>
       ) : null}
     </ScrollView>
+
+    {/* Sibling of the ScrollView rather than a child: it renders as a native
+        modal, and nesting it inside a scroll container confuses the scroll
+        view's content measurement. */}
+    <DayDetail />
+    </>
   );
 };
 

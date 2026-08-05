@@ -3,6 +3,7 @@ import { FlatList, View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import AppText from "./AppText";
 import HourData from "./HourData";
+import { formatClockTime as formatTime } from "./dateUtils";
 import {
   spacing,
   type,
@@ -18,29 +19,21 @@ const HOURS_SHOWN = 24;
 // current instant.
 const ONE_HOUR = 3600;
 
-// "HH:MM:SS" -> a locale-formatted time. The raw API string was rendered
-// directly, so a US user saw "18:00" where their OS convention is "6 PM".
-// Formatted off the epoch would give the *device's* timezone; these strings are
-// already local to the forecast location, so they are formatted as-is.
-const formatTime = (timeString) => {
-  if (typeof timeString !== "string") return "--:--";
-  const [hour, minute] = timeString.split(":");
-  const h = Number(hour);
-  if (!Number.isInteger(h) || minute === undefined) return "--:--";
-
-  // Built against an arbitrary date so only the time portion is formatted.
-  const date = new Date(2000, 0, 1, h, Number(minute) || 0);
-  return date.toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-};
-
-const HourDataCollection = () => {
+// With `day` supplied (the day-detail screen) the strip shows that whole day
+// from midnight. Without it (the home screen) it rolls forward from the current
+// hour into tomorrow.
+const HourDataCollection = ({ day, title = "Hourly Forecast" }) => {
   const data = useSelector((state) => state.weather.data);
   const styles = useThemedStyles(makeStyles);
 
   const hours = useMemo(() => {
+    if (day) {
+      const own = Array.isArray(day.hours) ? day.hours : [];
+      return own
+        .map((h) => ({ ...h, day: day.datetime }))
+        .slice(0, HOURS_SHOWN);
+    }
+
     const days = data?.days;
     if (!Array.isArray(days) || !Array.isArray(days[0]?.hours)) return [];
 
@@ -67,22 +60,25 @@ const HourDataCollection = () => {
     }
 
     return all.slice(start, start + HOURS_SHOWN);
-  }, [data]);
+  }, [data, day]);
+
+  // Only the live strip has a "Now"; a named day starts at its own midnight.
+  const showNow = !day;
 
   // Stable identity so the memoized HourData tiles are not all re-created on
   // every parent render.
   const renderItem = useCallback(
     ({ item, index }) => (
       <HourData
-        time={index === 0 ? "Now" : formatTime(item.datetime)}
+        time={index === 0 && showNow ? "Now" : formatTime(item.datetime)}
         temperature={item.temp}
         image={item.icon}
         precip={item.precipprob}
-        isCurrent={index === 0}
+        isCurrent={index === 0 && showNow}
         isLastItem={index === hours.length - 1}
       />
     ),
-    [hours.length]
+    [hours.length, showNow]
   );
 
   if (hours.length === 0) return null;
@@ -90,7 +86,7 @@ const HourDataCollection = () => {
   return (
     <View style={styles.container}>
       <AppText style={styles.title} accessibilityRole="header">
-        Hourly Forecast
+        {title}
       </AppText>
       {/* A horizontal FlatList virtualises cleanly here. The vertical weekly
           list is deliberately left as a .map() — a same-axis VirtualizedList

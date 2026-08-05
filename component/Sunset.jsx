@@ -2,6 +2,7 @@ import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import AppText from "./AppText";
+import { formatClockTime as formatTime } from "./dateUtils";
 import {
   spacing,
   radius,
@@ -20,31 +21,11 @@ import {
 const sunriseIcon = require("../Image/sunset.png");
 const sunsetIcon = require("../Image/sunrise.png");
 
-// Total function: the previous version called `.split(":")` unconditionally, so
-// a missing `sunrise` field threw a TypeError during render and took down the
-// whole app.
-//
-// The API's "HH:MM:SS" is already local to the forecast location, so it is
-// formatted in place rather than via the epoch (which would convert it into the
-// *device's* timezone). Locale formatting means a US user sees "5:47 AM" rather
-// than the raw 24-hour string.
-const formatTime = (timeString) => {
-  if (typeof timeString !== "string") return "--:--";
-  const [hour, minute] = timeString.split(":");
-  const h = Number(hour);
-  if (!Number.isInteger(h) || minute === undefined) return "--:--";
-
-  // An arbitrary date, so only the time portion is formatted.
-  return new Date(2000, 0, 1, h, Number(minute) || 0).toLocaleTimeString(
-    undefined,
-    { hour: "numeric", minute: "2-digit" }
-  );
-};
-
-const Sunset = () => {
-  const today = useSelector((state) => state.weather.data?.days?.[0]);
+const Sunset = ({ day }) => {
+  const storeToday = useSelector((state) => state.weather.data?.days?.[0]);
   const styles = useThemedStyles(makeStyles);
 
+  const today = day ?? storeToday;
   if (!today) return null;
 
   const sunrise = formatTime(today.sunrise);

@@ -23,6 +23,11 @@ const weatherSlice = createSlice({
     // When the currently displayed `data` arrived, so the UI can mark a reading
     // as stale rather than presenting an hour-old forecast as current.
     lastUpdated: null,
+    // Index into `data.days` for the day-detail screen, or null when it is
+    // closed. Kept in the store rather than in component state so that loading
+    // a different city can close a screen that is now showing another place's
+    // Wednesday.
+    selectedDay: null,
   },
   reducers: {
     fetchWeatherStart: (state, action) => {
@@ -44,6 +49,9 @@ const weatherSlice = createSlice({
       state.error = null;
       state.data = action.payload;
       state.lastUpdated = Date.now();
+      // A new forecast invalidates any open day screen — its index would point
+      // at a different city's day.
+      state.selectedDay = null;
     },
     fetchWeatherFailure: (state, action) => {
       state.loading = false;
@@ -52,6 +60,12 @@ const weatherSlice = createSlice({
       state.error = action.payload;
       // `data` and `lastUpdated` are left alone: the previous city stays on
       // screen, and Home marks it as stale rather than pretending it is fresh.
+    },
+    selectDay: (state, action) => {
+      state.selectedDay = action.payload;
+    },
+    clearSelectedDay: (state) => {
+      state.selectedDay = null;
     },
     locateStart: (state) => {
       state.locating = true;
@@ -68,6 +82,7 @@ const weatherSlice = createSlice({
       state.locating = false;
       state.refreshing = false;
       state.lastUpdated = null;
+      state.selectedDay = null;
     },
   },
 });
@@ -78,5 +93,7 @@ export const {
   fetchWeatherFailure,
   locateStart,
   resetWeather,
+  selectDay,
+  clearSelectedDay,
 } = weatherSlice.actions;
 export default weatherSlice.reducer;
